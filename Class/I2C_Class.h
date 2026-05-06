@@ -2,9 +2,6 @@
 #define __I2C_CLASS_H__
 
 #include "user_main.h"
-#include "i2c.h"
-
-#include <stdint.h>
 
 class MCU_I2C
 {

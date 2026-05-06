@@ -2,9 +2,6 @@
 #define __AUV_UPPERLINK_CLASS_H__
 
 #include "UART_Class.h"
-#include "cJSON.h"
-#include <string.h>
-#include <stdio.h>
 
 struct AUV_Status_t {
     // 传感器数据

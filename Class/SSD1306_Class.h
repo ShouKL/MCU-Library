@@ -6,8 +6,6 @@
 #include "SPI_Class.h"
 #include "SSD1306_fonts.h"
 
-#include <stdint.h>
-
 #ifdef SSD1306_X_OFFSET
 #define SSD1306_X_OFFSET_LOWER (SSD1306_X_OFFSET & 0x0F)
 #define SSD1306_X_OFFSET_UPPER ((SSD1306_X_OFFSET >> 4) & 0x07)
@@ -52,7 +50,6 @@ static const SSD1306_Font_t Font_11x18 = {11, 18, Font11x18, NULL};
 static const SSD1306_Font_t Font_16x26 = {16, 26, Font16x26, NULL};
 static const SSD1306_Font_t Font_16x24 = {16, 24, Font16x24, NULL};
 static const SSD1306_Font_t Font_16x15 = {16, 15, Font16x15, char_width};
-
 
 class SSD1306 : public MCU_I2C, public MCU_SPI
 {

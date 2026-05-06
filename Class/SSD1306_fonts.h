@@ -1,9 +1,7 @@
 #ifndef __SSD1306_FONTS_H__
 #define __SSD1306_FONTS_H__
 
-
 #include "user_main.h"
-#include <stdint.h>
 
 static const uint16_t Font7x10 [] = {
 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000,  // sp

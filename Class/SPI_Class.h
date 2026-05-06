@@ -2,10 +2,7 @@
 #define __SPI_CLASS_H__
 
 #include "user_main.h"
-#include "spi.h"
 #include "GPIO_Class.h"
-
-#include <stdint.h>
 
 class MCU_SPI
 {

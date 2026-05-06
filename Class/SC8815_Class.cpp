@@ -9,7 +9,7 @@ void SC8815::Init(void)
     //->设置 PSTOP 为高
     PSTOP.high();
     //->设置 CE 为低
-    Delay(220);   //必要的启动延时
+    Init_Delay(220);   //必要的启动延时
 
     //配置 SC8815 电池参数选项
     BatteryConfigStruct.IRCOMP = SCBAT_IRCOMP_20mR;
@@ -51,7 +51,7 @@ void SC8815::Init(void)
     InterruptMaskInitStruct.EOC = sENABLE;
     ConfigInterruptMask();
 
-    Delay(50);
+    Init_Delay(50);
     
     /***现在可以设置 PSTOP 引脚为低, 启动 SC8815 功率转换****/
     PSTOP.low();
@@ -121,7 +121,7 @@ void SC8815::HardwareInit(void)
     writeByte(&tmp, SCREG_CTRL3_SET);
 
     //配置完成后必要的延时
-    Delay(5);
+    Init_Delay(5);
 }
 
 void SC8815::ConfigInterruptMask(void)

@@ -2,8 +2,6 @@
 #define __CONTROL_ALGORITHM_H
 
 #include "user_main.h"
-#include "arm_math.h"
-#include "main.h"
 
 enum PID_Mode { AUTOMATIC, MANUAL };
 enum PID_Direction { DIRECT, REVERSE };    //正作用 反作用 

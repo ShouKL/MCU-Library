@@ -2,9 +2,6 @@
 #define __TIM_CLASS_H__
 
 #include "user_main.h"
-#include "tim.h"
-
-#include <stdint.h>
 
 class MCU_TIM
 {

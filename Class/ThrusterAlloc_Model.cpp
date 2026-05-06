@@ -1,5 +1,4 @@
 #include "ThrusterAlloc_Model.h"
-#include <math.h>
 
 
 void ThrusterAllocModel_8::Init(void){

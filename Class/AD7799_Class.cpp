@@ -1,13 +1,12 @@
 #include "AD7799_Class.h"
-#include <math.h>
 
 void AD7799::Init(void){
 	Reset();
-    Delay(5);
-
+  	Init_Delay(5);
+	
 	if ((GetRegisterValue(AD7799_REG_ID, 1) & 0x0F) != AD7799_ID) {
 		Error_Handler();
-	} 
+	}
 }
 
 void AD7799::Reset() {
@@ -15,6 +14,7 @@ void AD7799::Reset() {
 	CS.low();
 	MCU_SPI::transmit(dataToSend, 4);
 	CS.high();
+	SetBuffer(1);
 }
 
 uint32_t AD7799::GetRegisterValue(uint8_t regAddress, uint8_t size) {
@@ -72,7 +72,7 @@ void AD7799::SetMode(AD7799_Mode mode) {
 	command &= ~AD7799_MODE_SEL(0xFF);
 	command |= AD7799_MODE_SEL((uint32_t ) mode);
 	SetRegisterValue(AD7799_REG_MODE, command, 2);
-	mode = mode;
+	m_mode = mode;
 }
 
 void AD7799::SetRate(AD7799_Rate rate) {
@@ -81,25 +81,23 @@ void AD7799::SetRate(AD7799_Rate rate) {
 	command &= ~AD7799_MODE_RATE(0xFF);
 	command |= AD7799_MODE_RATE((uint32_t ) rate);
 	SetRegisterValue(AD7799_REG_MODE, command, 2);
-	rate = rate;
-}
-
-void AD7799::SetChannel(AD7799_Channel channel) {
-	uint32_t command;
-	command = GetRegisterValue(AD7799_REG_CONF, 2);
-	command &= ~AD7799_CONF_CHAN(0xFF);
-	command |= AD7799_CONF_CHAN((uint32_t ) channel);
-	SetRegisterValue(AD7799_REG_CONF, command, 2);
-	channel = channel;
+	m_rate = rate;
 }
 
 void AD7799::SetGain(AD7799_Gain gain) {
-	uint32_t command;
-	command = GetRegisterValue(AD7799_REG_CONF, 2);
-	command &= ~AD7799_CONF_GAIN(0xFF);
-	command |= AD7799_CONF_GAIN((uint32_t ) gain);
-	SetRegisterValue(AD7799_REG_CONF, command, 2);
-	gain = gain;
+    uint32_t command = GetRegisterValue(AD7799_REG_CONF, 2);
+    command &= ~(0x07 << 8); // 明确清除 Bit 8, 9, 10
+    command |= ((uint32_t)gain << 8);
+    SetRegisterValue(AD7799_REG_CONF, command, 2);
+    m_gain = gain;
+}
+
+void AD7799::SetChannel(AD7799_Channel channel) {
+    uint32_t command = GetRegisterValue(AD7799_REG_CONF, 2);
+    command &= ~0x07; // 明确清除低 3 位 (Channel 位)
+    command |= ((uint32_t)channel & 0x07);
+    SetRegisterValue(AD7799_REG_CONF, command, 2);
+    m_channel = channel;
 }
 
 void AD7799::SetReference(uint8_t state) {
@@ -116,7 +114,17 @@ void AD7799::SetPolarity(AD7799_Polarity polarity) {
 	command &= ~AD7799_CONF_POLAR(1);
 	command |= AD7799_CONF_POLAR((uint32_t ) polarity);
 	SetRegisterValue(AD7799_REG_CONF, command, 2);
-	polarity = polarity;
+	m_polarity = polarity;
+}
+
+void AD7799::SetBuffer(uint8_t state) {
+    uint16_t command = (uint16_t)GetRegisterValue(AD7799_REG_CONF, 2);
+    if (state) {
+        command |= (1 << 4);  // 置位 Bit 4
+    } else {
+        command &= ~(1 << 4); // 清零 Bit 4
+    }
+    SetRegisterValue(AD7799_REG_CONF, command, 2);
 }
 
 HAL_StatusTypeDef AD7799::SingleConversion() {
@@ -124,11 +132,10 @@ HAL_StatusTypeDef AD7799::SingleConversion() {
 
 	uint32_t startTime = HAL_GetTick();
 	while (!Ready()) {
-		if (HAL_GetTick() - startTime > (uint32_t) (1.5 * settle_time_ms[(uint8_t) rate])) {
+		if (HAL_GetTick() - startTime > (uint32_t) (1.5 * settle_time_ms[(uint8_t) m_rate])) {
 			return HAL_TIMEOUT;
 		}
 	}
-
 	rawConversion = GetRegisterValue(AD7799_REG_DATA, 3);
 
 	RawToVolt();
@@ -137,24 +144,49 @@ HAL_StatusTypeDef AD7799::SingleConversion() {
 }
 
 void AD7799::RawToVolt() {
-	float gain = (float) pow(2.0, (double) gain);
+    uint32_t actual_gain = 1 << ((uint8_t)m_gain & 0x07);
+    
+    double dvref = (double)vref;
+    double dgain = (double)actual_gain;
+    double raw = (double)rawConversion;
 
-	if (polarity == AD7799_UNIPOLAR) {
-		float fullscale = (float) pow(2.0, (double) N);
-		voltConversion = (float) rawConversion * (vref / (fullscale * gain));
-	} else {
-		float fullscale = (float) pow(2.0, (double) (N - 1));
-		voltConversion = (((float) rawConversion - fullscale) * vref) / (fullscale * gain);
-	}
+    if (m_polarity == AD7799_UNIPOLAR) {
+        voltConversion = (float)((raw * dvref) / (16777216.0 * dgain));
+    } else {
+        voltConversion = (float)(((raw - 8388608.0) * dvref) / (8388608.0 * dgain));
+    }
+}
+
+uint8_t AD7799::CheckConnection(void) {
+    uint32_t original_conf = GetRegisterValue(AD7799_REG_CONF, 2);
+    SetRegisterValue(AD7799_REG_CONF, original_conf | AD7799_CONF_BO_EN, 2);
+
+    SetMode(AD7799_MODE_SINGLE);
+    uint32_t start = HAL_GetTick();
+    while(!Ready()) {
+        if(HAL_GetTick() - start > 500) break;
+    }
+
+    uint8_t stat = (uint8_t)GetRegisterValue(AD7799_REG_STAT, 1);
+    uint32_t raw = GetRegisterValue(AD7799_REG_DATA, 3);
+
+    SetRegisterValue(AD7799_REG_CONF, original_conf, 2);
+
+    if ((stat & AD7799_STAT_ERR) || (raw >= 0xFFFFEE)) {
+        return 1;
+    }
+    return 0;
 }
 
 AD7799::AD7799(SPI_HandleTypeDef* hspi, MCU_GPIO cs, float vref, AD7799_Rate rate, AD7799_Mode mode, AD7799_Channel channel, 
 	AD7799_Gain gain, AD7799_Polarity polarity, uint32_t rawConversion, float voltConversion) 
-			: MCU_SPI(hspi, cs), vref(vref), rate(rate), mode(mode), channel(channel), gain(gain), 
-			   polarity(polarity), rawConversion(rawConversion), voltConversion(voltConversion)
+			: MCU_SPI(hspi, cs), vref(vref), m_rate(rate), m_mode(mode), m_channel(channel), m_gain(gain), 
+			   m_polarity(polarity), rawConversion(rawConversion), voltConversion(voltConversion)
 {
 }
 
 AD7799::~AD7799()
 {
 }
+
+#endif

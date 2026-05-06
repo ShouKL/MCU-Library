@@ -2,7 +2,6 @@
 #define __ADC_CLASS_H__
 
 #include "user_main.h"
-#include <stdint.h>
 
 class MCU_ADC
 {

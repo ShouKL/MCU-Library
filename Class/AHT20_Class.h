@@ -4,6 +4,7 @@
 #include "user_main.h"
 #include "I2C_Class.h"
 
+
 #define AHT20_ADDRESS 0x70
 
 class AHT20 : public MCU_I2C

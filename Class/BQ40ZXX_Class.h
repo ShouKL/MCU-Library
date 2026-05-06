@@ -4,8 +4,6 @@
 #include "user_main.h"
 #include "I2C_Class.h"
 
-#include <stdint.h>
-
 #define BQ40Z50_Addr       0x16    // BQ40Z50 I2C地址（7位）
 
 typedef enum

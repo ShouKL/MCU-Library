@@ -8,7 +8,6 @@ bool MCU_I2C::write(uint8_t *data, uint16_t size, uint16_t Memaddress, uint32_t 
       Error_Handler();
       return false;
     }
-    Delay(5);
     return true;
 }
 
@@ -21,7 +20,6 @@ bool MCU_I2C::transmit(uint8_t* data, uint16_t size, uint32_t timeout)
         Error_Handler();
         return false;
     }
-    Delay(5);
     return true;
 }
 
@@ -33,7 +31,6 @@ bool MCU_I2C::read(uint8_t *data, uint16_t size, uint16_t Memaddress, uint32_t t
       Error_Handler();
       return false;
     }
-    Delay(5);
     return true;
 }
 
@@ -45,7 +42,6 @@ bool MCU_I2C::receive(uint8_t* data, uint16_t size, uint32_t timeout)
         Error_Handler();
         return false;
     }
-    Delay(5);
     return true;
 }
 

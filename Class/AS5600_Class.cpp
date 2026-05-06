@@ -1,7 +1,4 @@
 #include "AS5600_Class.h"
-#include <stdio.h>
-#include "i2c.h"
-#include "I2C_Class.h"
 
 AS5600::AS5600(I2C_HandleTypeDef* hi2c, ADC_HandleTypeDef* hadc, uint8_t address, uint16_t memAddSize)
   : MCU_I2C(hi2c, address, memAddSize), MCU_ADC(hadc)
@@ -197,3 +194,5 @@ float AS5600::convertRawAngleToDegrees(int16_t newAngle)
     float retVal = newAngle * 0.087f;
     return retVal;
 }
+
+#endif

@@ -1,9 +1,7 @@
 #ifndef __THRUSTERALLOC_MODEL_H__
 #define __THRUSTERALLOC_MODEL_H__
 
-
 #include "user_main.h"
-#include "arm_math.h"
 #include "BLDC_Driver_Class.h"
 #include "Control_Algorithm.h"
 typedef struct {

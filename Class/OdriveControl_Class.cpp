@@ -1,12 +1,10 @@
 #include "OdriveControl.h"
-#include <stdarg.h>
-#include <string.h>
 
 OdriveControl::OdriveControl(UART_HandleTypeDef* _huart)
     : MCU_UART(_huart, nullptr, 0, nullptr, 0)
 {
 }
-
+0
 void OdriveControl::sendAscii(const char* format, ...) {
     char buf[128];
     va_list args;

@@ -2,9 +2,6 @@
 #define __UART_CLASS_H__
 
 #include "user_main.h"
-#include "usart.h"
-#include <stdint.h>
-#include <stddef.h>
 
 #define MAX_BUF_SIZE 256
 #define MAX_SYNC_LEN 8 // 限制帧头/帧尾最大支持的字节数

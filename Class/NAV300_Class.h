@@ -4,10 +4,6 @@
 #include "user_main.h"
 #include "UART_Class.h"
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #define NAV300_head_len 2
 #define NAV300_tail_len 2
 static const uint8_t default_head[] = {0xFC, 0xCF};

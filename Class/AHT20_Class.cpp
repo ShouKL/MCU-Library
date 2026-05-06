@@ -2,7 +2,7 @@
 
 void AHT20::Init(void){
   uint8_t readBuffer;
-  Delay(40);
+  Init_Delay(40);
   receive(&readBuffer, 1);
   if ((readBuffer & 0x08) == 0x00)
   {

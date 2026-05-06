@@ -1,7 +1,4 @@
 #include "SSD1306_Class.h"
-#include <math.h>
-#include <stdlib.h>
-#include <string.h>  // For memcpy
 
 void SSD1306::Reset(void) {
     /* for I2C - do nothing */
@@ -56,7 +53,7 @@ void SSD1306::Init(void) {
     Reset();
 
     // Wait for the screen to boot
-    Delay(100);
+    Init_Delay(100);
 
     // Init OLED
     SetDisplayOn(0); //display off

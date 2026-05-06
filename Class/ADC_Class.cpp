@@ -1,6 +1,5 @@
 #include "ADC_Class.h"
 
-
 MCU_ADC::MCU_ADC(ADC_HandleTypeDef* hadc) : hadc(hadc), last_value(0)
 {
 }

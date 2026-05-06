@@ -5,8 +5,6 @@
 #include "GPIO_Class.h"
 #include "TIM_Class.h"
 
-#include <stdint.h>
-
 class LED : public MCU_GPIO, public MCU_TIM
 {
 	private:

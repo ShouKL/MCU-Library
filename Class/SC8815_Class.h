@@ -5,8 +5,6 @@
 #include "GPIO_Class.h"
 #include "I2C_Class.h"
 
-#include <stdint.h>
-
 //设置 SC8815 功率路径上的感测电阻值, 应为 10 或 5 这样的整数 (单位:mOhm)
 #define SCHW_VBUS_RSHUNT        10          //VBUS 电流路径上的感测电阻值
 #define SCHW_BATT_RSHUNT        10          //电池电流路径上的感测电阻值

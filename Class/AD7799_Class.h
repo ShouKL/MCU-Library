@@ -140,11 +140,11 @@ class AD7799 : public MCU_SPI
 private:
 	float vref;
 
-	AD7799_Rate rate;
-	AD7799_Mode mode;
-	AD7799_Channel channel;
-	AD7799_Gain gain;
-	AD7799_Polarity polarity;
+	AD7799_Rate m_rate;
+	AD7799_Mode m_mode;
+	AD7799_Channel m_channel;
+	AD7799_Gain m_gain;
+	AD7799_Polarity m_polarity;
 
 	uint32_t rawConversion;
 	float voltConversion;
@@ -164,14 +164,18 @@ public:
 	void RawToVolt();
 
 	float GetVoltConversion() { return voltConversion; }
-	AD7799_Gain GetGain() { return gain; }
-
+	uint32_t GetRawConversion() { return rawConversion; }
+	AD7799_Gain GetGain() { return m_gain; }
+	uint8_t CheckConnection(void);
+	void SetBuffer(uint8_t state); // state: 1 为开启，0 为关闭
 	AD7799(SPI_HandleTypeDef* hspi, MCU_GPIO cs, float vref, AD7799_Rate rate, AD7799_Mode mode, AD7799_Channel channel, 
 			AD7799_Gain gain, AD7799_Polarity polarity, uint32_t rawConversion, float voltConversion);
 	~AD7799();
 
 } ;
 
+
+#endif
 
 #endif
 

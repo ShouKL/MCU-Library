@@ -1,8 +1,8 @@
 #ifndef __ODRIVECONTROL_CLASS_H__
 #define __ODRIVECONTROL_CLASS_H__
 
+#include "user_main.h"
 #include "UART_Class.h"
-#include <stdio.h>
 
 enum AxisState : uint8_t {
     AXIS_UNDEFINED = 0,

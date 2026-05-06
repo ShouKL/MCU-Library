@@ -5,11 +5,11 @@ void MS5837::Init(void)
     uint8_t reset_cmd = MS5837_RESET;
 
     MCU_I2C::transmitByte(&reset_cmd);
-    Delay(10);  
+    Init_Delay(10);  
 
     for (uint8_t i = 0; i < 7; i++) {
         m_MS5837_values.C[i] = read16(MS5837_PROM_READ + (i * 2));
-        Delay(20);
+        Init_Delay(20);
     }
     uint8_t crcRead       = m_MS5837_values.C[0] >> 12;
     uint8_t crcCalculated = crc4(m_MS5837_values.C);

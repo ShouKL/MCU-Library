@@ -1,5 +1,6 @@
 #include "UART_Class.h"
-#include <string.h>
+
+#if defined(HAL_UART_MODULE_ENABLED)
 
 void MCU_UART::start_receive_interrupt() {
     if (huart != nullptr) {
@@ -148,3 +149,5 @@ MCU_UART::MCU_UART(UART_HandleTypeDef* huart, const uint8_t* head, uint8_t h_len
 }
 
 MCU_UART::~MCU_UART() {}
+
+#endif
