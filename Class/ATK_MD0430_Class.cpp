@@ -122,6 +122,7 @@ uint32_t ATK_MD0430::pow(uint8_t x, uint8_t y)
 uint8_t ATK_MD0430::init(void)
 {
     uint16_t chip_id;
+    Init_Delay(50);
     chip_id = get_chip_id();
     if ((chip_id != ATK_MD0430_CHIP_ID1) && (chip_id != ATK_MD0430_CHIP_ID2))
     {
@@ -134,15 +135,10 @@ uint8_t ATK_MD0430::init(void)
         State.height = ATK_MD0430_LCD_HEIGHT;
     }
     reg_init();
-    set_disp_dir(ATK_MD0430_LCD_DISP_DIR_0);
+    set_disp_dir(ATK_MD0430_LCD_DISP_DIR_90);
     clear(ATK_MD0430_WHITE);
     display_on();
     backlight_on();
-    uint8_t ret = touch_init();
-    if (ret != ATK_MD0430_TOUCH_EOK)
-    {
-        return ATK_MD0430_ERROR;
-    }
     
     return ATK_MD0430_EOK;
 }
@@ -632,7 +628,7 @@ uint8_t ATK_MD0430::touch_scan(atk_md0430_touch_point_t *point, uint8_t cnt)
     atk_md0430_lcd_disp_dir_t dir;
     uint8_t tpn_info[6];
     atk_md0430_touch_point_t point_raw;
-    
+
     if ((cnt == 0) || (cnt > ATK_MD0430_TOUCH_TP_MAX))
     {
         return 0;
@@ -689,6 +685,8 @@ uint8_t ATK_MD0430::touch_scan(atk_md0430_touch_point_t *point, uint8_t cnt)
             }
             
             point[point_index].size = point_raw.size;
+
+            Touch_Point = point[point_index];
         }
         
         tp_info = 0;

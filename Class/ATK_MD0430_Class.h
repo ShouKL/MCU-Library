@@ -1,12 +1,12 @@
 #ifndef __ATK_MD0430_H__
 #define __ATK_MD0430_H__
 
+#include "user_main.h"
 #include "FSMC_Class.h"
 #include "GPIO_Class.h"
 #include "I2C_Software_Class.h"
 #include "ATK_MD0430_Font.h"
 
-#include <string.h>
 
 /* FSMC 相关配置 */
 #define ATK_MD0430_FSMC_BANK            FSMC_NORSRAM_BANK4      // 使用 FSMC Bank4
@@ -144,10 +144,6 @@ private:
 
 private:
     uint16_t get_chip_id(void);         // 读取驱动芯片 ID
-    void set_column_address(uint16_t sc, uint16_t ec); // 设置列地址范围
-    void set_page_address(uint16_t sp, uint16_t ep);   // 设置行地址范围
-    void start_write_memory(void);      // 开始写显存指令
-    void start_read_memory(void);       // 开始读显存指令
     uint32_t pow(uint8_t x, uint8_t y); // 简单幂运算
 
     void touch_hw_reset(uint8_t addr);
@@ -169,6 +165,13 @@ public:
     inline uint16_t get_lcd_height(void) { return State.height; }
     inline atk_md0430_lcd_scan_dir_t get_scan_dir(void) { return State.scan_dir; }
     inline atk_md0430_lcd_disp_dir_t get_disp_dir(void) { return State.disp_dir; }
+    inline atk_md0430_touch_point_t get_touch_point(void) { return Touch_Point; }
+    inline MCU_FSMC& get_fsmc(void) { return lcd_fsmc; }
+
+    void set_column_address(uint16_t sc, uint16_t ec); // 设置列地址范围
+    void set_page_address(uint16_t sp, uint16_t ep);   // 设置行地址范围
+    void start_write_memory(void);      // 开始写显存指令
+    void start_read_memory(void);       // 开始读显存指令
     
     /* 背光控制 */
     inline void backlight_on(void) { LCD_BL.high(); }
